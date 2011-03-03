@@ -1,7 +1,7 @@
 import pyPLUTO as pp
 import os
 import numpy as np
-import asciidata
+#import asciidata
 from scipy import integrate
 
 
