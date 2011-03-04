@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import matplotlib.pylab as plt
 import pyPLUTO as plp
+import PhyConst as phc
 import Jet_Analysis as jana
 import numpy as np
 import idlsave as idls # This is just for the mass_flux_plot. 
@@ -250,10 +251,20 @@ def force_plots(Data,**kwargs):
 
     
 
-def ldinstable(nparr=None,w_dir=None,**kwargs):
+def ldinstable(nparr=None,nmhd=None,w_dir=None,**kwargs):
+    if nmhd == None : nmhd = 319
     if nparr == None : nparr = [198,199,200]
+    Vref = 1.0e-5*np.sqrt((phc.G*phc.Msun*kwargs.get('Mstar',30.0))/(phc.au*kwargs.get('ul',1.0)))
+    print '---------------------------------------------'
+    print 'Mass of Star :',kwargs.get('Mstar',30)
+    print 'Inner disk radius :',kwargs.get('ul',1.0)
+    print 'UNIT VELOCITY [km/s] :',Vref
+    print '----------------------------------------------'
+  
+
+
     Fc = jana.Force()
-    Data_List=[]
+    Data_List=[plp.pload(nmhd,w_dir=w_dir)]
     for j in nparr:
         Data_List.append(plp.pload(j,w_dir=w_dir))
 
@@ -262,9 +273,14 @@ def ldinstable(nparr=None,w_dir=None,**kwargs):
         Vp_Dict_List.append(Fc.proj_force(p,p.v1,p.v2,**kwargs))
 
     f1 = plt.figure(num=1)
-    ax1 = f1.add_subplot(211)
-    for q in  Vp_Dict_List:
-        plt.plot(q['Qy'],q['para_flvalues'][0,:])
+    ax2 = f1.add_subplot(212)
+    plt.plot( Vp_Dict_List[0]['Qy'], Vref*Vp_Dict_List[0]['para_flvalues'][0,:],'k--')
+    for q in  Vp_Dict_List[1:]:
+        plt.plot(q['Qy'],Vref*q['para_flvalues'][0,:])
+    
+    plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
+    plt.ylabel(r'Poloidal Velocity : $V_{\rm pol} [\rm km\, \rm s^{-1}]$',labelpad=10)
+
     
     
         
