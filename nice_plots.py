@@ -295,9 +295,9 @@ def deg_coll_plots(dirlist=None, **kwargs):
         f1 = plt.figure()
         plt.xlabel(r'Distance Along Field Line : s',labelpad=6)
         plt.ylabel(r'$\Delta \zeta [\%]$',labelpad=10)
-        plt.plot(zetalist[0][0],zetalist[0][1],'k-.')
+        plt.plot(zetalist[0][0],zetalist[0][1],'r-.')
         plt.plot(zetalist[1][0],zetalist[1][1],'k--')
-        plt.plot(zetalist[2][0],zetalist[2][1],'k')
+#       plt.plot(zetalist[2][0],zetalist[2][1],'k')
         plt.axis([0.0,150.0,0.0,40.0])
         plt.minorticks_on()
     else:
@@ -454,7 +454,37 @@ def mass_flux_plot(*args,**kwargs):
     plt.xlabel(r'Time [yr]',labelpad=6)
     plt.ylabel(r'$\dot{\rm M}_{\rm out} [ \rm {M}_{\odot} \rm{yr}^{-1} ]$',labelpad=15)
 
-
+def minj_mflux(*args,**kwargs):
+    Qu = jana.quantities()
+    Minj_List =[]
+    Minj_MHD_List=[]
+    for i in range(len(args[1])):
+        Minj_List.append(Qu.Mflux(args[1][i],Mstar=args[0][i],scale=True)['Mfr']+Qu.Mflux(args[1][i],Mstar=args[0][i],scale=True)['Mfz'])
+        
+    MHD_30minj = Qu.Mflux(args[2],Mstar=30.0,scale=True)['Mfr']+Qu.Mflux(args[2],Mstar=30.0,scale=True)['Mfz']
+    for i in args[0]:
+        Minj_MHD_List.append(MHD_30minj*np.sqrt(i/30.0))
+    
+    f1 = plt.figure(num=1)
+    ax1 = f1.add_subplot(211)
+    plt.axis([10.0,70.0,2.0e-5,7.99e-5])
+    plt.plot(args[0],Minj_MHD_List,'k*')
+    plt.plot(args[0],Minj_List,'ko')
+    plt.minorticks_on()
+    locs,labels = plt.yticks()
+    plt.yticks(locs, map(lambda x: "%.1f" % x, locs*1e5))
+    plt.text(0.0, 1.03, r'$10^{-5}$', transform = plt.gca().transAxes)
+    plt.xlabel(r'Stellar Mass : $M_{*} [M_{\odot}]$')
+    plt.ylabel(r' $\dot{M}_{\rm vert} + \dot{M}_{\rm rad}\, [M_{\odot}\,\rm yr^{-1}]$')
+    
+    ax2 = f1.add_subplot(212)
+    plt.axis([10.0,70.0,0.0,50.0])
+    plt.plot(args[0],100*((np.array(Minj_List)-np.array(Minj_MHD_List))/np.array(Minj_MHD_List)),'k^')
+    plt.minorticks_on()
+    plt.xlabel(r'Stellar Mass : $M_{*} [M_{\odot}]$')
+    plt.ylabel(r'$\%$ Change in Total Mass Outflow Rates')
+    
+    
 
 def para_per_plot(*args,**kwargs):
     #Getting the parallel component of the force.
@@ -468,7 +498,8 @@ def para_per_plot(*args,**kwargs):
     StRdict=Fc.Stellar_Rad(D,**kwargs)
 
     #1. Gravity Projection
-    #grav_proj = Fc.proj_force(D,Gdict['G_r'],Gdict['G_z'])
+    grav_proj = Fc.proj_force(D,Gdict['G_r'],Gdict['G_z'])
+    print '>> Finished Projecting Gravity force'
     #2. Pressure Projection
     press_proj = Fc.proj_force(D,Pdict['Fp_r'],Pdict['Fp_z'])
     print '>> Finished Projecting Pressure force'
@@ -478,37 +509,41 @@ def para_per_plot(*args,**kwargs):
     #4. Lorentz Projection
     lf_proj = Fc.proj_force(D,Ldict['Fl_r'],Ldict['Fl_z'])
     print '>> Finished Projecting Lorentz force'
-    #5. StRad Projection
-    str_proj = Fc.proj_force(D,StRdict['Fr_r'],StRdict['Fr_z'])
-    print '>> Finished Projecting StRad force'
-
+   
 
     f1 = plt.figure(num=1)
     ax1 = f1.add_subplot(111)
     ax1.axis([0.5,150.0,1.0e-5,1.0e-1])
-    #plt.loglog(grav_proj['Qy'],grav_proj['para_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
-    #plt.loglog(press_proj['Qy'],press_proj['para_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
-    #plt.loglog(cf_proj['Qy'],cf_proj['para_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
-    #plt.loglog(lf_proj['Qy'],lf_proj['para_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
-    #if kwargs.get('StForce',False)==True:
-    #    plt.loglog(str_proj['Qy'],str_proj['para_flvalues'][0,:],'brown',linestyle=kwargs.get('ls','-'))
+    if kwargs.get('Parallel',False)==True:
+        print "GOING TO PLOT THE PARALLEL COMPONENTS"
+        plt.loglog(grav_proj['Qy'],grav_proj['para_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
+        plt.loglog(press_proj['Qy'],press_proj['para_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+        plt.loglog(cf_proj['Qy'],cf_proj['para_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+        plt.loglog(lf_proj['Qy'],lf_proj['para_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+        if kwargs.get('StForce',False)==True:
+            #5. StRad Projection
+            str_proj = Fc.proj_force(D,StRdict['Fr_r'],StRdict['Fr_z'])
+            print '>> Finished Projecting StRad force'
+            plt.loglog(str_proj['Qy'],str_proj['para_flvalues'][0,:],'brown',linestyle=kwargs.get('ls','-'))
     
-   # plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
-   # plt.ylabel(r'Specific Forces Parallel to Field line',labelpad=8)
+        plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
+        plt.ylabel(r'Specific Forces Parallel to Field line',labelpad=8)
     
+    else:
+        print "GOING TO PLOT THE PERPENDICULAR COMPONENTS"
+        plt.loglog(grav_proj['Qy'],grav_proj['perp_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
+        plt.loglog(press_proj['Qy'],press_proj['perp_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+        plt.loglog(cf_proj['Qy'],cf_proj['perp_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+        plt.loglog(lf_proj['Qy'],lf_proj['perp_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+        if kwargs.get('StForce',False)==True:
+            #5. StRad Projection
+            str_proj = Fc.proj_force(D,StRdict['Fr_r'],StRdict['Fr_z'])
+            print '>> Finished Projecting StRad force'
+            plt.loglog(str_proj['Qy'],str_proj['perp_flvalues'][0,:],'brown',linestyle=kwargs.get('ls','-'))
 
-    #f2 = plt.figure(num=2)
-    #ax2 = f2.add_subplot(111)
-    #ax2.axis([0.5,150.0,1.0e-5,1.0e-1])
-    #plt.loglog(grav_proj['Qy'],grav_proj['perp_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
-    plt.loglog(press_proj['Qy'],press_proj['perp_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
-    plt.loglog(cf_proj['Qy'],cf_proj['perp_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
-    plt.loglog(lf_proj['Qy'],lf_proj['perp_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
-    if kwargs.get('StForce',False)==True:
-        plt.loglog(str_proj['Qy'],str_proj['perp_flvalues'][0,:],'brown',linestyle=kwargs.get('ls','-'))
+        plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
+        plt.ylabel(r'Specific Forces Perpendicular to Field line',labelpad=6)
 
-    plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
-    plt.ylabel(r'Specific Forces Perpendicular to Field line',labelpad=6)
 
 
     
