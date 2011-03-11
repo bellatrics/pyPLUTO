@@ -4,9 +4,10 @@ from scipy.interpolate import RectBivariateSpline
 
 
 Opac_Dir = '/Users/bhargavvaidya/Simulations/Disk_setup/Makemake/Opacities/Mean_Opacity/Semenov_Opacity/'
+Opac_Dir = '/home/vaidya/SG_RAD_PLUTO_Ver2010-12-07/Makemake/Opacities/Mean_Opacity/Semenov_Opacity/'
 RossFileName = 'Total_Rossland.out'
 PlanckFileName = 'Total_Planck.out'
-ConstantGasOpacity = 0.342
+ConstantGasOpacity = 0.01
 
 def SemenovMeanOpacity(Temp = None, Density = None,Type=None):
     # Type deteremines the mean opacity type, 0 : Rosseland , 1: Planck.

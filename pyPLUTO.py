@@ -60,7 +60,26 @@ class pload(object):
         f_var.close()
         return {'fltype':fltype, 'nvar':nvar, 'allvars':allvars}
 
-
+    def time_info(self,w_dir=None):
+	    if w_dir is None: w_dir =curdir()
+	    fname_v = w_dir+"dbl.out"
+	    last_line = file(fname_v,"r").readlines()[-1].split()
+	    nlast = int(last_line[0])
+	    SimTime =  float(last_line[1])
+	    Dt = float(last_line[2])
+	    Nstep = int(last_line[3])
+	    
+	    print "------------TIME INFORMATION--------------"
+	    print 'nlast =',nlast
+	    print 'time  =',SimTime
+	    print 'dt    =', Dt
+	    print 'Nstep =',Nstep
+	    print "-------------------------------------------"
+	    
+	    return {'nlast':nlast,'time':SimTime,'dt':Dt,'Nstep':Nstep}
+    
+	    
+	    
     def geometry(self,w_dir=None):
         if w_dir is None : w_dir = curdir()
 	fname_d = w_dir+"definitions.h"
