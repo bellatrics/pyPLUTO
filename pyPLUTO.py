@@ -418,10 +418,9 @@ class Image(object):
 		x2 = kwargs.get('x2')
 
 		if kwargs.get('polar',False) == True:
-			#figure(num=fignum+1, figsize=(12,10), dpi=80, facecolor='w', edgecolor='k')
 			var_cart = self.get_polar_plot(var,**kwargs)
-			#imshow(var_cart,extent=[np.min(x1),np.max(x1),np.min(x1*np.cos(np.max(x2))),np.max(x1*np.cos(np.min(x2)))],interpolation='bicubic',aspect='equal')
 			pcolormesh(var_cart)
+			
 		
 		else:
 			if var.shape == var.T.shape  :
@@ -431,13 +430,12 @@ class Image(object):
 
 			figure(num=fignum, dpi=80, facecolor='w', edgecolor='k')
 			pcolormesh(x1,x2,var,vmin=kwargs.get('vmin',np.min(var)),vmax=kwargs.get('vmax',np.max(var)))
-			title(kwargs.get('title',"Title"),size=kwargs.get('size'))
-			xlabel(kwargs.get('label1',"Xlabel"),size=kwargs.get('size'))
-			ylabel(kwargs.get('label2',"Ylabel"),size=kwargs.get('size'))
 		
-
-			if kwargs.get('cbar',(False,''))[0] == True:
-				colorbar(orientation=kwargs.get('cbar')[1])
+		title(kwargs.get('title',"Title"),size=kwargs.get('size'))
+		xlabel(kwargs.get('label1',"Xlabel"),size=kwargs.get('size'))
+		ylabel(kwargs.get('label2',"Ylabel"),size=kwargs.get('size'))
+		if kwargs.get('cbar',(False,''))[0] == True:
+			colorbar(orientation=kwargs.get('cbar')[1])
 	
 
 	def multi_disp(self,*args,**kwargs):
