@@ -440,12 +440,20 @@ class Image(object):
 
 	def multi_disp(self,*args,**kwargs):
 		mvar = []
+		var_cart_list=[]
 		mfig = figure(num=kwargs.get('fignum',1),facecolor='w', edgecolor='k')
 		for arg in args:
-			if arg.shape == arg.T.shape  :
-				mvar.append(arg)
+
+			if kwargs.get('polar',False) == True:
+				var_cart = self.get_polar_plot(arg,**kwargs)
+				var_cart_list.append(var_cart)
+			
 			else :
-				mvar.append(arg.T)
+				if arg.shape == arg.T.shape  :
+					mvar.append(arg)
+				else :
+					mvar.append(arg.T)
+		
 
 		xmin = np.min(kwargs.get('x1'))
 		xmax = np.max(kwargs.get('x1'))		
@@ -458,7 +466,12 @@ class Image(object):
 		dictcbar=kwargs.get('cbar',(False,'','each'))
 		for j in range(mprod):
 			mfig.add_subplot(Nrows,Ncols,j+1)
-			imshow(mvar[j],extent=[xmin,xmax,ymin,ymax],origin="image",interpolation="spline36")
+			if kwargs.get('polar',False) == True:
+				pcolormesh(var_cart_list[j])
+				axis([0.0,var_cart_list[j].shape[1],0.0,var_cart_list[j].shape[0]])
+			else:
+				imshow(mvar[j],extent=[xmin,xmax,ymin,ymax],origin="image",interpolation="spline36")
+			
 			xlabel(kwargs.get('label1',mprod*['Xlabel'])[j])
 			ylabel(kwargs.get('label2',mprod*['Ylabel'])[j])
 			title(kwargs.get('title',mprod*['Title'])[j])
