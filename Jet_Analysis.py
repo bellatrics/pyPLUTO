@@ -506,6 +506,8 @@ class quantities(object):
 
 		Val1 = [Qx[np.abs(Fl_Varat[0,:]-1.0).argmin()],Qy[np.abs(Fl_Varat[0,:]-1.0).argmin()]]
 		Val2 = [Qx[np.abs(Fl_Vfrat[0,:]-1.0).argmin()],Qy[np.abs(Fl_Vfrat[0,:]-1.0).argmin()]]
+
+	
 		print '------------------------------------------------'
 		print '[Qx,Qy] at Alfven :', Val1
 		print '[Qx,Qy] at Fast   :', Val2
@@ -513,6 +515,9 @@ class quantities(object):
 		print 'Opening Angle at Fast   :',90.0-(180.0/np.pi)*np.arctan(Val2[1]/(Val2[0]-xfl))
 		print '------------------------------------------------'
 
+		return [Val1,Val2,90.0-(180.0/np.pi)*np.arctan(Val1[1]/(Val1[0]-xfl)),90.0-(180.0/np.pi)*np.arctan(Val2[1]/(Val2[0]-xfl))]
+
+		
 	def Current(self,Data):
 		D = Data
 		[r2d, z2d] = np.meshgrid(Data.x1,Data.x2)
