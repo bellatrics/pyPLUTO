@@ -3,7 +3,7 @@ matplotlib.use('TkAgg')
 
 
 
-from numpy import arange, sin, pi , cos,log10
+from numpy import arange, sin, pi,log10,max,min,cos
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg,NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import pyPLUTO as pp
@@ -17,14 +17,11 @@ class App:
     def __init__(self,master):
         frame = Frame(master)
         frame.pack()
+        
         self.wdir = os.getcwd() + '/'
+        self.I = pp.Image()
 
-        self.qbutton= Button(frame,text='Quit',fg="black",command=frame.quit)
-        self.qbutton.pack(side=LEFT)
-       
-        self.clsbutton=Button(frame,text="Clear",command=self.plotclear)
-        self.clsbutton.pack(side=LEFT)
-
+        
         self.enstep = Entry(frame,width=5)
         self.enstep.pack(side=LEFT)
         self.enstep.insert(0, "0")
@@ -45,29 +42,32 @@ class App:
 
         self.slvar = StringVar()
         self.slvar.set("Choose Slice")
-        SliceList = ("Along x1","Along x2","Along x3")
+        SliceList = ("Along x1","Along x2","Along x3","Along x1-x2","Along x2-x3","Along x3-x1")
         OptionMenu(frame, self.slvar, *SliceList, command=self.setslice).pack(side=LEFT)
 
-        
-        
-        self.ex3 = Entry(frame,width=5)
-        self.ex3.pack(side=LEFT)
-        self.ex3.insert(0, "x3")
-
-        self.ex2 = Entry(frame,width=5)
-        self.ex2.pack(side=LEFT)
-        self.ex2.insert(0, "x2")
 
         self.ex1 = Entry(frame,width=5)
         self.ex1.pack(side=LEFT)
         self.ex1.insert(0, "x1")
 
+        self.ex2 = Entry(frame,width=5)
+        self.ex2.pack(side=LEFT)
+        self.ex2.insert(0, "x2")
+        
+        self.ex3 = Entry(frame,width=5)
+        self.ex3.pack(side=LEFT)
+        self.ex3.insert(0, "x3")
+
+        
+
+       
+
         self.logvar = IntVar()
         self.chkb = Checkbutton(frame,text="Enable Log",variable=self.logvar,onvalue=1,offvalue=0,command=self.logchkcall)
         self.chkb.pack(side=LEFT)
 
-        self.getplot= Button(frame,text='Plot',fg="black",command=self.plotfinal)
-        self.getplot.pack(side=LEFT)
+       # self.getplot= Button(frame,text='Plot',fg="black",command=self.plotfinal)
+       # self.getplot.pack(side=LEFT)
 
         # place a graph somewhere here
         self.f = Figure(figsize=(8,8), dpi=100)
@@ -118,18 +118,82 @@ class App:
                 self.var = self.var[int(self.ex1.get()),:]
             else:
                 self.var = self.var[int(self.ex2.get()),:,int(self.ex3.get())]
+
         else:
             self.x = self.D.x3
             self.var = self.var[int(self.ex2.get()),int(self.ex3.get()),:]
 
-        
+
         self.a.plot(self.x,self.var)
         self.canvas.show()
+
+    def plotsurface(self):
+        if self.logvar.get() == 1:
+            self.var = log10(self.D.__getattribute__(self.myvar))
+        else:
+            self.var = self.D.__getattribute__(self.myvar)
+            
+        if self.slicename == "Along x1-x2":
+            self.x = self.D.x1
+            self.y = self.D.x2
+            if self.grid_dict["n3"] == 1:
+                self.var = self.var[:,:].T
+            else:
+                self.var = self.var[:,:,int(self.ex3.get())].T
+        
+
+        elif self.slicename == "Along x2-x3":
+            self.x = self.D.x2
+            self.y = self.D.x3
+            self.var = self.var[int(self.ex1.get()),:,:].T
+
+        else:
+            self.x = self.D.x1
+            self.y = self.D.x3
+            self.var = self.var[:,int(self.ex1.get()),:].T
+            
+        self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var))
+        self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
+       
+        self.canvas.show()
+                         
+
+        
+
+    def epssave(self):
+        self.f.savefig(self.myvar+'_'+self.enstep.get()+'.eps')
+    def pngsave(self):
+        self.f.savefig(self.myvar+'_'+self.enstep.get()+'.png')
+    def pdfsave(self):
+        self.f.savefig(self.myvar+'_'+self.enstep.get()+'.pdf')
+    def jpgsave(self):
+        self.f.savefig(self.myvar+'_'+self.enstep.get()+'.jpg')
     
+    
+
+
 
     
     
             
 root=Tk()
 app=App(root)
+
+menubar = Menu(root)
+savemenu = Menu(menubar,tearoff=0)
+savemenu.add_command(label='EPS',command=app.epssave)
+savemenu.add_command(label='PDF',command=app.pdfsave)
+savemenu.add_command(label='PNG',command=app.pngsave)
+savemenu.add_command(label='JPG',command=app.jpgsave)
+menubar.add_cascade(label="Save As", menu=savemenu)
+
+
+
+menubar.add_command(label='Plot',command = app.plotfinal)
+menubar.add_command(label='Surface',command=app.plotsurface)
+menubar.add_command(label='Clear',command=app.plotclear)
+menubar.add_command(label='Quit',command=root.quit)
+
+root.config(menu=menubar)
+
 root.mainloop()   
