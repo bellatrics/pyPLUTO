@@ -150,7 +150,7 @@ class App:
         else:
             self.x = self.D.x1
             self.y = self.D.x3
-            self.var = self.var[:,int(self.ex1.get()),:].T
+            self.var = self.var[:,int(self.ex2.get()),:].T
             
         self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var))
         self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
