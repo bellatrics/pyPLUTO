@@ -41,7 +41,7 @@ class pload(object):
         fname_v = w_dir+"dbl.out"
         f_var = open(fname_v)
         lnum_v = len(f_var.readlines())
-        Var_info = linecache.getline(fname_v,2).split()
+        Var_info = linecache.getline(fname_v,1).split()
         fltype = Var_info[4]
         nvar = len(Var_info[6:])
         allvars=[]

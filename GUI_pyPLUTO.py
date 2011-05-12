@@ -66,6 +66,10 @@ class App:
         self.chkb = Checkbutton(frame,text="Enable Log",variable=self.logvar,onvalue=1,offvalue=0,command=self.logchkcall)
         self.chkb.pack(side=LEFT)
 
+        self.polarvar = IntVar()
+        self.polchkb = Checkbutton(frame,text="Polar",variable=self.polarvar,onvalue=1,offvalue=0,command=self.polchkcall)
+        self.polchkb.pack(side=LEFT)
+
        # self.getplot= Button(frame,text='Plot',fg="black",command=self.plotfinal)
        # self.getplot.pack(side=LEFT)
 
@@ -91,12 +95,21 @@ class App:
         
     def logchkcall(self):
         self.logchk = self.logvar.get()
+
+    def polchkcall(self):
+        self.polchk = self.polarvar.get()
         
     def setslice(self,event):
         self.slicename=self.slvar.get()
         
     def plotclear(self):
         self.a.clear()
+       
+        
+        if len(self.f.axes)>1:
+            self.f.delaxes(self.f.axes[1])
+            self.f.subplots_adjust(right=0.90)
+
         self.canvas.show()
 
     def plotfinal(self):
@@ -123,11 +136,12 @@ class App:
             self.x = self.D.x3
             self.var = self.var[int(self.ex2.get()),int(self.ex3.get()),:]
 
-
+        
         self.a.plot(self.x,self.var)
         self.canvas.show()
 
     def plotsurface(self):
+       
         if self.logvar.get() == 1:
             self.var = log10(self.D.__getattribute__(self.myvar))
         else:
@@ -139,7 +153,10 @@ class App:
             if self.grid_dict["n3"] == 1:
                 self.var = self.var[:,:].T
             else:
-                self.var = self.var[:,:,int(self.ex3.get())].T
+                if self.polarvar.get() == 1:
+                    self.var = self.I.get_polar_plot(self.var[:,:,int(self.ex3.get())],rtheta=True)
+                else:
+                    self.var = self.var[:,:,int(self.ex3.get())].T
         
 
         elif self.slicename == "Along x2-x3":
@@ -150,11 +167,22 @@ class App:
         else:
             self.x = self.D.x1
             self.y = self.D.x3
-            self.var = self.var[:,int(self.ex2.get()),:].T
-            
-        self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var))
-        self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
-       
+            if self.polarvar.get() == 1:
+                self.var = self.I.get_polar_plot(self.var[:,int(self.ex2.get()),:],rphi=True)
+            else:
+                self.var = self.var[:,int(self.ex2.get()),:].T
+
+        
+        
+        if self.polarvar.get() == 1:
+           # self.a.axis([0,max(self.D.n1),0,max(self.D.n2)])
+            self.image=self.a.pcolormesh(self.var,vmin=min(self.var),vmax=max(self.var))
+        else:
+            self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
+            self.image=self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var))
+        
+        
+        self.f.colorbar(self.image)
         self.canvas.show()
                          
 
