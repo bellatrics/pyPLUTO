@@ -175,8 +175,8 @@ class App:
         
         
         if self.polarvar.get() == 1:
-            if self.slicename == "Along x1-x2":self.a.axis([0,max(self.D.n1),0,max(self.D.n2)])
-            if self.slicename == "Along x3-x1":self.a.axis([0,max(self.D.n1),0,max(self.D.n3)])
+           # if self.slicename == "Along x1-x2":self.a.axis([0,max(self.D.n1),0,max(self.D.n2)])
+            #if self.slicename == "Along x3-x1":self.a.axis([0,max(self.D.n1),0,max(self.D.n3)])
             self.image=self.a.pcolormesh(self.var,vmin=min(self.var),vmax=max(self.var))
         else:
             self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
