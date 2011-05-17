@@ -52,6 +52,38 @@ def Analysis(filepath=None,info=None):
     
     return ana_dict
 
+class Force_Ana(objet):
+    def Gravity(self,Data):
+        [r2d, z2d] = np.meshgrid(Data.x1,Data.x2)
+        r2d=r2d.T
+        z2d=z2d.T
+        Tool = pp.Tools()
+        Grav_force_dict = {}
+        Grav_force_dict['G_r'] = 1.0/(r2d*r2d)
+        Grav_force_dict['G_z'] = np.zeros(r2d.shape)
+
+        return Grav_force_dict
+
+    def Pressure(self,Data,phi=10):
+        Tool = pp.Tools()
+        Prgrad = Tool.Grad(Data.pr[:,:,phi],Data.x1,Data.x2,Data.dx1,Data.dx2,polar=True)
+        Press_force_dict ={}
+        Press_force_dict['Fp_r'] = -1.0*(Prgrad[:,:,0]/Data.rho[:,:,phi])
+        Press_force_dict['Fp_th'] = -1.0*(Prgrad[:,:,1]/Data.rho[:,:,phi])
+
+        return Press_force_dict
+
+    def Centrifugal(self,Data,phi=10):
+        [r2d,z2d] = np.meshgrid(Data.x1,Data.x2)
+        r2d=r2d.T
+        z2d=z2d.T
+        Centri_force_dict={}
+        Centri_force_dict['Fcf_r'] = (Data.v3[:,:,10]*Data.v3[:,:,10])/r2d
+        Centri_force_dict['Fcf_z'] = np.zeros(r2d.shape)
+	
+        return Centri_force_dict
+
+
         
     
     

@@ -46,7 +46,7 @@ def nice_plots(fs=None):
     # Lines Properties
     mpl.rcParams['lines.linewidth'] = 2.5
     mpl.rcParams['lines.markersize']  = 15
-    mpl.rcParams['lines.markeredgewidth']=3.0
+    mpl.rcParams['lines.markeredgewidth']=1.5
     # Axes and ticks properties [HINT : for getting minor ticks use plt.minorticks_on()]
     mpl.rcParams['axes.linewidth']= 3.0
     mpl.rcParams['xtick.major.size']=13.0
