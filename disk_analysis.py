@@ -81,7 +81,7 @@ class Force_Ana(object):
         RefDensity = urho
         RefVel = np.sqrt((phc.G*phc.Msun*Mstar)/RefLength)
         RefTemp = (RefVel**2)*(mu_HHe/R_GasC)
-        RefEnergy = RefDensity*(RefLength**3)*(RefVelocity**2)
+        RefEnergy = RefDensity*(RefLength**3)*(RefVel**2)
 
         radconstant = 4.0*(phc.sigma)/(phc.c)
         dimless_radconstant = radconstant*(RefTemp**4.0)*(RefLength**3.0)/(RefEnergy)
