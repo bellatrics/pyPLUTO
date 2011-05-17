@@ -86,7 +86,7 @@ class Force_Ana(object):
         radconstant = 4.0*(phc.sigma)/(phc.c)
         dimless_radconst = radconstant*(RefTemp**4.0)*(RefLength**3.0)/(RefEnergy)
         
-        Radpr = (1.0/3.0)*dimless_radconst*(Data.Temp[:,:,phi]**4.0)
+        Radpr = (1.0/3.0)*dimless_radconst*((Data.Temp[:,:,phi]/RefTemp)**4.0)
         RadPrgrad = Tool.Grad(Radpr,Data.x1,Data.x2,Data.dx1,Data.dx2,polar=True)
         Rad_Press_force_dict ={}
         Rad_Press_force_dict['RFp_r'] = -1.0*(RadPrgrad[:,:,0]/Data.rho[:,:,phi])
