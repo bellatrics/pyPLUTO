@@ -84,7 +84,7 @@ class Force_Ana(object):
         RefEnergy = RefDensity*(RefLength**3)*(RefVel**2)
 
         radconstant = 4.0*(phc.sigma)/(phc.c)
-        dimless_radconstant = radconstant*(RefTemp**4.0)*(RefLength**3.0)/(RefEnergy)
+        dimless_radconst = radconstant*(RefTemp**4.0)*(RefLength**3.0)/(RefEnergy)
         
         Radpr = (1.0/3.0)*dimless_radconst*(Data.Temp[:,:,phi]**4.0)
         RadPrgrad = Tool.Grad(Radpr,Data.x1,Data.x2,Data.dx1,Data.dx2,polar=True)
