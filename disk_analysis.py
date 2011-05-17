@@ -52,7 +52,7 @@ def Analysis(filepath=None,info=None):
     
     return ana_dict
 
-class Force_Ana(objet):
+class Force_Ana(object):
     def Gravity(self,Data):
         [r2d, z2d] = np.meshgrid(Data.x1,Data.x2)
         r2d=r2d.T
@@ -72,6 +72,27 @@ class Force_Ana(objet):
         Press_force_dict['Fp_th'] = -1.0*(Prgrad[:,:,1]/Data.rho[:,:,phi])
 
         return Press_force_dict
+
+    def RadPressure(self,Data,phi=10,ul=1.0,urho=1.0e-8,Mstar=10.0):
+        Tool = pp.Tools()
+        R_GasC = phc.NA*phc.kB
+        mu_HHe = 2.353
+        RefLength = ul*phc.au
+        RefDensity = urho
+        RefVel = np.sqrt((phc.G*phc.Msun*Mstar)/RefLength)
+        RefTemp = (RefVel**2)*(mu_HHe/R_GasC)
+        RefEnergy = RefDensity*(RefLength**3)*(RefVelocity**2)
+
+        radconstant = 4.0*(phc.sigma)/(phc.c)
+        dimless_radconstant = radconstant*(RefTemp**4.0)*(RefLength**3.0)/(RefEnergy)
+        
+        Radpr = (1.0/3.0)*dimless_radconst*(Data.Temp[:,:,phi]**4.0)
+        RadPrgrad = Tool.Grad(Radpr,Data.x1,Data.x2,Data.dx1,Data.dx2,polar=True)
+        Rad_Press_force_dict ={}
+        Rad_Press_force_dict['RFp_r'] = -1.0*(RadPrgrad[:,:,0]/Data.rho[:,:,phi])
+        Rad_Press_force_dict['RFp_th'] = -1.0*(RadPrgrad[:,:,1]/Data.rho[:,:,phi])
+
+        return Rad_Press_force_dict
 
     def Centrifugal(self,Data,phi=10):
         [r2d,z2d] = np.meshgrid(Data.x1,Data.x2)
