@@ -130,11 +130,11 @@ class App:
             if self.grid_dict["n3"] == 1:
                 self.var = self.var[int(self.ex1.get()),:]
             else:
-                self.var = self.var[int(self.ex2.get()),:,int(self.ex3.get())]
+                self.var = self.var[int(self.ex1.get()),:,int(self.ex3.get())]
 
         else:
             self.x = self.D.x3
-            self.var = self.var[int(self.ex2.get()),int(self.ex3.get()),:]
+            self.var = self.var[int(self.ex1.get()),int(self.ex2.get()),:]
 
         
         self.a.plot(self.x,self.var)
