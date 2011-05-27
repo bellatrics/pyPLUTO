@@ -156,9 +156,15 @@ class pload(object):
             for i in range(varinf.get('nvar')):
                 print "> Reading %s" % (varinf.get('allvars')[i])
                 if varinf.get('allvars')[i] == varinf.get('allvars')[-1] :
-                    data_dict[(varinf.get('allvars')[i])]=A[-n3*n2*n1:].reshape(n2,n1).transpose()
+			if n3 == 1:
+				data_dict[(varinf.get('allvars')[i])]=A[-n2*n1:].reshape(n2,n1).transpose()
+			else:
+				data_dict[(varinf.get('allvars')[i])]=A[-n3*n2*n1:].reshape(n3,n2,n1).transpose()
                 else :
-                    data_dict[(varinf.get('allvars')[i])]=A[i*n3*n2*n1:(i+1)*n3*n2*n1].reshape(n2,n1).transpose()
+			if n3 == 1:
+				data_dict[(varinf.get('allvars')[i])]=A[i*n2*n1:(i+1)*n2*n1].reshape(n2,n1).transpose()
+			else:
+				data_dict[(varinf.get('allvars')[i])]=A[i*n3*n2*n1:(i+1)*n3*n2*n1].reshape(n3,n2,n1).transpose()
             
         else:
             fname_list = []
