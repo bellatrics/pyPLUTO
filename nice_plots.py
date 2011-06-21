@@ -510,7 +510,8 @@ def para_per_plot(*args,**kwargs):
     lf_proj = Fc.proj_force(D,Ldict['Fl_r'],Ldict['Fl_z'])
     print '>> Finished Projecting Lorentz force'
 
-    dum1 = np.linspace(1e-6,1e-0,100) 
+    #dum1 = np.linspace(1e-6,1e-0,100) 
+    dum1 = np.linspace(-0.02,1.0,100)
     fastrad = np.linspace(9.48,9.48,100)
     fastmhd = np.linspace(38.59,38.59,100)
     alfmhd = np.linspace(4.41,4.41,100)
@@ -519,14 +520,21 @@ def para_per_plot(*args,**kwargs):
     f1 = plt.figure(num=1,figsize=(14,10))
     ax1 = f1.add_subplot(121)
     
-    ax1.axis([0.5,150.0,1.0e-5,1.0e-1])
-    ax1.set_aspect('equal')
+    #ax1.axis([0.5,150.0,1.0e-5,1.0e-1])
+    ax1.axis([0.5,150.0,-0.01,0.01])
+    #ax1.set_aspect('equal')
     #if kwargs.get('Parallel',False)==True:
     print "GOING TO PLOT THE PARALLEL COMPONENTS"
     #plt.loglog(grav_proj['Qy'],grav_proj['para_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
-    plt.loglog(press_proj['Qy'],press_proj['para_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
-    plt.loglog(cf_proj['Qy'],cf_proj['para_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
-    plt.loglog(lf_proj['Qy'],lf_proj['para_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(press_proj['Qy'],press_proj['para_flvalues'][0,:]-grav_proj['para_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(cf_proj['Qy'],cf_proj['para_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(lf_proj['Qy'],lf_proj['para_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+   
+    plt.plot(press_proj['Qy'],press_proj['para_flvalues'][0,:]-grav_proj['para_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+    plt.plot(cf_proj['Qy'],cf_proj['para_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+    plt.plot(lf_proj['Qy'],lf_proj['para_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+    plt.plot(press_proj['Qy'],press_proj['para_flvalues'][0,:]-grav_proj['para_flvalues'][0,:]+cf_proj['para_flvalues'][0,:]+lf_proj['para_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
+
     if kwargs.get('StForce',False)==True:
         #5. StRad Projection
         str_proj = Fc.proj_force(D,StRdict['Fr_r'],StRdict['Fr_z'])
@@ -535,21 +543,33 @@ def para_per_plot(*args,**kwargs):
 
     plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
     plt.ylabel(r'Specific Forces Parallel to Field line',labelpad=8)
-    plt.loglog(fastmhd,dum1,'m--')
-    plt.loglog(alfmhd,dum1,'k--')
-    plt.loglog(fastrad,dum1,'m-')
-    plt.loglog(alfrad,dum1,'k-')
+    #plt.loglog(fastmhd,dum1,'m--')
+    #plt.loglog(alfmhd,dum1,'k--')
+    #plt.loglog(fastrad,dum1,'m-')
+    #plt.loglog(alfrad,dum1,'k-')
+    plt.plot(fastmhd,dum1,'m--')
+    plt.plot(alfmhd,dum1,'k--')
+    
+    
     
 
     ax2 = f1.add_subplot(122)
-    ax2.set_aspect('equal')
-    ax2.axis([0.5,150.0,1.0e-5,1.0e-1])
+    #ax2.set_aspect('equal')
+    #ax2.axis([0.5,150.0,1.0e-5,1.0e-1])
+    ax2.axis([0.5,150.0,-0.02,0.02])
     #else:
     print "GOING TO PLOT THE PERPENDICULAR COMPONENTS"
     #plt.loglog(grav_proj['Qy'],grav_proj['perp_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
-    plt.loglog(press_proj['Qy'],press_proj['perp_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
-    plt.loglog(cf_proj['Qy'],cf_proj['perp_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
-    plt.loglog(lf_proj['Qy'],lf_proj['perp_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(press_proj['Qy'],press_proj['perp_flvalues'][0,:]-grav_proj['perp_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(cf_proj['Qy'],cf_proj['perp_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+    #plt.loglog(lf_proj['Qy'],lf_proj['perp_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+
+    plt.plot(press_proj['Qy'],press_proj['perp_flvalues'][0,:]-grav_proj['perp_flvalues'][0,:],'r',linestyle=kwargs.get('ls','-'))
+    plt.plot(cf_proj['Qy'],cf_proj['perp_flvalues'][0,:],'b',linestyle=kwargs.get('ls','-'))
+    plt.plot(lf_proj['Qy'],lf_proj['perp_flvalues'][0,:],'g',linestyle=kwargs.get('ls','-'))
+    plt.plot(press_proj['Qy'],press_proj['perp_flvalues'][0,:]-grav_proj['perp_flvalues'][0,:]+cf_proj['perp_flvalues'][0,:]+lf_proj['perp_flvalues'][0,:],'k',linestyle=kwargs.get('ls','-'))
+
+
     if kwargs.get('StForce',False)==True:
         #5. StRad Projection
         str_proj = Fc.proj_force(D,StRdict['Fr_r'],StRdict['Fr_z'])
@@ -558,10 +578,12 @@ def para_per_plot(*args,**kwargs):
 
     plt.xlabel(r'Distance Along the Field Line : s',labelpad=6)
     plt.ylabel(r'Specific Forces Perpendicular to Field line',labelpad=6)
-    plt.loglog(fastmhd,dum1,'m--')
-    plt.loglog(alfmhd,dum1,'k--')
-    plt.loglog(fastrad,dum1,'m-')
-    plt.loglog(alfrad,dum1,'k-')
+    #plt.loglog(fastmhd,dum1,'m--')
+    #plt.loglog(alfmhd,dum1,'k--')
+    #plt.loglog(fastrad,dum1,'m-')
+    #plt.loglog(alfrad,dum1,'k-')
+    plt.plot(fastmhd,dum1,'m--')
+    plt.plot(alfmhd,dum1,'k--')
 
 
 

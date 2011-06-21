@@ -3,6 +3,7 @@ import PhyConst as phc
 import os
 import numpy as np
 import asciidata as asc
+import itertools
 from scipy import integrate
 
 
@@ -52,6 +53,86 @@ def Analysis(filepath=None,info=None):
     
     return ana_dict
 
+class Rad_Average(object):
+
+    def Sigma(self,Data,**kwargs):
+        Sig = np.zeros([Data.x1.shape][0])
+        for i in range(Data.n1):
+            Sig[i] = (Data.rho[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+        PhySig = kwargs.get('urho',1.0e-8)*phc.au*kwargs.get('ul',1.0)
+       
+        return PhySig*Sig
+
+    def Pressure(self,Data,**kwargs):
+        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
+        Press = np.zeros([Data.x1.shape][0])
+        for i in range(Data.n1):
+            Press[i] = (Data.pr[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+        PhyPress = kwargs.get('urho',1.0e-8)*RefVel*RefVel*phc.au*kwargs.get('ul',1.0)
+        return PhyPress*Press
+
+    def Csound(self,Data,**kwargs):
+        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
+        P = self.Pressure(Data,**kwargs)
+        S = self.Sigma(Data,**kwargs)
+        Cs = np.sqrt(P/S)
+        return Cs*1.0e-5
+        
+    def Omega(self,Data,**kwargs):
+       RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
+       OmInt = np.zeros([Data.x1.shape][0])
+       for i in range(Data.n1):
+           OmInt[i] = ((Data.v3[i,:,10]/Data.x1[i])*Data.dx2).sum()
+       PhyOm = RefVel/(phc.au*kwargs.get('ul',1.0))
+       return PhyOm*OmInt
+
+    def ToomreQ(self,Data,**kwargs):
+       Cs = self.Csound(Data,**kwargs)*1.0e5
+       Om = self.Omega(Data,**kwargs)
+       S = self.Sigma(Data,**kwargs)
+       Q = (Cs*Om)/(2.0*np.pi*phc.G*S)
+       #Q = np.zeros([Data.x1.shape][0])
+       #for i in range(Data.n1):
+       #    Q[i] = Cs[i]*Om[i]/(2.0*np.pi*phc.G*S[i]).sum()
+       
+       return Q
+
+class Vol_Average(object):
+    def Quantities(self, *args,**kwargs):
+        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
+        nstep = args[0]+1
+        wdir = args[1]
+        Mdisk = np.zeros(nstep)
+        Sigdisk = np.zeros(nstep)
+        Csdisk = np.zeros(nstep)
+        Omdisk = np.zeros(nstep)
+        Qdisk = np.zeros(nstep)
+        for ns in range(nstep):
+            D = pp.pload(ns,w_dir=wdir)
+            diskmass = np.zeros(D.rho.shape)
+            diskSigma = np.zeros(D.rho.shape)
+            diskCs = np.zeros(D.rho.shape)
+            diskOmega = np.zeros(D.rho.shape)
+            for i,j,k in itertools.product(range(D.n1),range(D.n2),range(D.n3)): 
+                diskmass[i,j,k] = D.rho[i,j,k]*(D.dx1[i]*D.dx2[j]*D.dx3[k]*D.x1[i]*D.x1[i]*np.sin(D.x2[j]))
+                diskSigma[i,j,k] = diskmass[i,j,k]*(D.rho[i,j,k]*D.x1[i]*np.sin(D.x2[j])*D.dx2[j])
+                diskCs[i,j,k] = diskmass[i,j,k]*(np.sqrt(kwargs.get('Gammae',1.00001)*D.pr[i,j,k]/D.rho[i,j,k]))
+                diskOmega[i,j,k] = diskmass[i,j,k]*(D.v3[i,j,k]/D.x1[i])
+
+            Mdisk[ns] = diskmass.sum()*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
+            Sigdisk[ns] = (1.0/diskmass.sum())*(diskSigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
+            Csdisk[ns] = (1.0/diskmass.sum())*(diskCs.sum())*RefVel
+            Omdisk[ns] = (1.0/diskmass.sum())*(diskOmega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
+            Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
+            
+            
+            
+
+        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk}
+            
+    
+
+    
 class Force_Ana(object):
     def Gravity(self,Data):
         [r2d, z2d] = np.meshgrid(Data.x1,Data.x2)
