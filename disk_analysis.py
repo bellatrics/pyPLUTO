@@ -103,31 +103,27 @@ class Vol_Average(object):
         nstep = args[0]+1
         wdir = args[1]
         Mdisk = np.zeros(nstep)
+        dV = np.zeros(nstep)
         Sigdisk = np.zeros(nstep)
         Csdisk = np.zeros(nstep)
         Omdisk = np.zeros(nstep)
         Qdisk = np.zeros(nstep)
         for ns in range(nstep):
             D = pp.pload(ns,w_dir=wdir)
-            diskmass = np.zeros(D.rho.shape)
-            diskSigma = np.zeros(D.rho.shape)
-            diskCs = np.zeros(D.rho.shape)
-            diskOmega = np.zeros(D.rho.shape)
-            for i,j,k in itertools.product(range(D.n1),range(D.n2),range(D.n3)): 
-                diskmass[i,j,k] = D.rho[i,j,k]*(D.dx1[i]*D.dx2[j]*D.dx3[k]*D.x1[i]*D.x1[i]*np.sin(D.x2[j]))
-                diskSigma[i,j,k] = diskmass[i,j,k]*(D.rho[i,j,k]*D.x1[i]*np.sin(D.x2[j])*D.dx2[j])
-                diskCs[i,j,k] = diskmass[i,j,k]*(np.sqrt(kwargs.get('Gammae',1.00001)*D.pr[i,j,k]/D.rho[i,j,k]))
-                diskOmega[i,j,k] = diskmass[i,j,k]*(D.v3[i,j,k]/D.x1[i])
-
-            Mdisk[ns] = diskmass.sum()*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
-            Sigdisk[ns] = (1.0/diskmass.sum())*(diskSigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
-            Csdisk[ns] = (1.0/diskmass.sum())*(diskCs.sum())*RefVel
-            Omdisk[ns] = (1.0/diskmass.sum())*(diskOmega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
+            dV = np.zeros(D.rho.shape)
+            Sigma = np.zeros(D.rho.shape)
+            dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,:,np.newaxis]
+            Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx2[np.newaxis,:,np.newaxis])
+            Csound = (D.rho*dV)*(np.sqrt(kwargs.get('Gammae',1.0001)*(D.pr/D.rho)))
+            Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
+            
+            Mdisk[ns] = ((D.rho*dV).sum())*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
+            Sigdisk[ns] = (1.0/(D.rho*dV).sum())*(Sigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
+            Csdisk[ns] = (1.0/(D.rho*dV).sum())*(Csound.sum())*RefVel
+            Omdisk[ns] = (1.0/(D.rho*dV).sum())*(Omega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
             Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
             
-            
-            
-
+           
         return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk}
             
     
