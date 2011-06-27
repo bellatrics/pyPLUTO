@@ -127,7 +127,7 @@ class Vol_Average(object):
             Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
             
            
-        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
+        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk*1.0e-8}
             
     
 
