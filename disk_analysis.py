@@ -104,7 +104,7 @@ class Vol_Average(object):
         wdir = args[1]
         Mdisk = np.zeros(nstep)
         dV = np.zeros(nstep)
-        IntE = np.zeros(nstep)
+        IntEdisk = np.zeros(nstep)
         Sigdisk = np.zeros(nstep)
         Csdisk = np.zeros(nstep)
         Omdisk = np.zeros(nstep)
