@@ -97,7 +97,7 @@ class Rad_Average(object):
        
        return Q
 
-   def IntEnergy(self,Data,**kwargs):
+    def IntEnergy(self,Data,**kwargs):
        Cs = self.Csound(Data,**kwargs)*1.0e5
        Deno = kwargs.get('Gammae',1.0001)*(kwargs.get('Gammae',1.0001)-1.0)
        Ie = Cs*Cs/Deno
