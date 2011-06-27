@@ -75,7 +75,7 @@ class Rad_Average(object):
         RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
         P = self.Pressure(Data,**kwargs)
         S = self.Sigma(Data,**kwargs)
-        Cs = np.sqrt(P/S)
+        Cs = kwargs.get('Gammae',1.0001)*np.sqrt(P/S)
         return Cs*1.0e-5
         
     def Omega(self,Data,**kwargs):
@@ -104,6 +104,7 @@ class Vol_Average(object):
         wdir = args[1]
         Mdisk = np.zeros(nstep)
         dV = np.zeros(nstep)
+        IntE = np.zeros(nstep)
         Sigdisk = np.zeros(nstep)
         Csdisk = np.zeros(nstep)
         Omdisk = np.zeros(nstep)
@@ -115,16 +116,18 @@ class Vol_Average(object):
             dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
             Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx2[np.newaxis,:,np.newaxis])
             Csound = (D.rho*dV)*(np.sqrt(kwargs.get('Gammae',1.0001)*(D.pr/D.rho)))
+            IntE = (Csound*Csound)/(kwargs.get('Gammae',1.0001)*((kwargs.get('Gammae',1.0001)-1.0)))
             Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
             
             Mdisk[ns] = ((D.rho*dV).sum())*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
             Sigdisk[ns] = (1.0/(D.rho*dV).sum())*(Sigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
             Csdisk[ns] = (1.0/(D.rho*dV).sum())*(Csound.sum())*RefVel
+            IntEdisk[ns] = (1.0/(D.rho*dV).sum())*(IntE.sum())*(RefVel**2)
             Omdisk[ns] = (1.0/(D.rho*dV).sum())*(Omega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
             Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
             
            
-        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk}
+        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
             
     
 
