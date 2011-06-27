@@ -77,7 +77,14 @@ class Rad_Average(object):
         S = self.Sigma(Data,**kwargs)
         Cs = kwargs.get('Gammae',1.0001)*np.sqrt(P/S)
         return Cs*1.0e-5
-        
+
+    def Temp(self,Data,**kwargs):
+        Cs = self.Csound(Data,**kwargs)*1.0e5
+        mu = 2.353
+        KELVIN = phc.kB/(mu*phc.mH)
+        Temperature = Cs*Cs/KELVIN
+        return Temperature
+    
     def Omega(self,Data,**kwargs):
        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
        OmInt = np.zeros([Data.x1.shape][0])
