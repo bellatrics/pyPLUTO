@@ -84,12 +84,12 @@ class Rad_Average(object):
         KELVIN = phc.kB/(mu*phc.mH)
         Temperature = Cs*Cs/KELVIN
         return Temperature
-    
+
     def Omega(self,Data,**kwargs):
        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
        OmInt = np.zeros([Data.x1.shape][0])
        for i in range(Data.n1):
-           OmInt[i] = ((Data.v3[i,:,10]/Data.x1[i])*Data.dx2).sum()
+           OmInt[i] = (Data.v3[i,Data.n2/2,10]/Data.x1[i])
        PhyOm = RefVel/(phc.au*kwargs.get('ul',1.0))
        return PhyOm*OmInt
 
@@ -104,14 +104,10 @@ class Rad_Average(object):
        
        return Q
 
-    def IntEnergy(self,Data,**kwargs):
-       Cs = self.Csound(Data,**kwargs)*1.0e5
-       Deno = kwargs.get('Gammae',1.0001)*(kwargs.get('Gammae',1.0001)-1.0)
-       Ie = Cs*Cs/Deno
-
-       return Ie
-
-
+            
+            
+            
+            
 class Vol_Average(object):
     def Quantities(self, *args,**kwargs):
         RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
@@ -143,6 +139,12 @@ class Vol_Average(object):
             
            
         return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
+
+
+
+class Stress(object):
+    def Reynold(self,Data):
+
             
     
 
