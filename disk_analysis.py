@@ -145,11 +145,23 @@ class Vol_Average(object):
 
 
 class Stress(object):
-    def Reynold(self,Data):
+    def Reynold(self,Data,Gammae=1.0001):
         D = Data
+        T = pp.Tools()
+        dOmdr = np.zeros([D.rho.shape[0],D.rho.shape[2]])
         VertAvg_Sg = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        VertAvg_P = np.zeros([D.rho.shape[0],D.rho.shape[2]])
         VertAvg_Vr  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        Delta_Vr  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
         VertAvg_Vphi  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        Delta_Vphi  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        AziAvg_Vphi =  np.zeros(D.rho.shape[0])
+        AziAvg_Sg =  np.zeros(D.rho.shape[0])
+        AziAvg_Vr =  np.zeros(D.rho.shape[0])
+        AziAvg_Fa = np.zeros(D.rho.shape[0])
+        AziAvg_Fr = np.zeros(D.rho.shape[0])
+        AziAvg_Deno = np.zeros(D.rho.shape[0])
+        
         dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
         Mdisk = ((D.rho*dV).sum())
         Vr_avg = (D.v1*D.rho*dV).sum()/Mdisk
@@ -158,10 +170,48 @@ class Stress(object):
         for k in range(Data.n3):
             for i in range(Data.n1):
                 VertAvg_Sg[i,k] = (D.rho[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
+                VertAvg_P[i,k] = (D.P[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
                 VertAvg_Vr[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v1[i,:,k]-Vr_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
                 VertAvg_Vphi[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v3[i,:,k]-Vp_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
 
-        FabyR = VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
+        [r2d,phi2d]=meshgrid(D.x1,D.x3)
+        r2d = r2d.T
+        Fa = r2d*VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
+        
+        for i in range(Data.n1):
+            AziAvg_Sg[i] = (VertAvg_Sg[i,:]*D.dx3).sum()
+            AziAvg_Vr[i] = (VertAvg_Vr[i,:]*D.dx3).sum()
+            AziAvg_Vphi[i] = (VertAvg_Vphi[i,:]*D.dx3).sum()
+            Delta_Vr[i,:] =  VertAvg_Vr[i,:] - AziAvg_Vr[i]
+            Delta_Vphi[i,:] =  VertAvg_Vr[i,:] - AziAvg_Vphi[i]
+
+        Fr = r2d*VertAvg_Sg*Delta_Vr*Delta_Vphi
+        Omega = VertAvg_Vphi/r2d
+        Ciso2 = Gammae*(VertAvg_P/VertAvg_Sg)
+        
+
+        for k in range(D.n3):
+            dOmdr[:,k] = (r2d[:,k]/Omega[:,k])*T.deriv(Omega[:,k],r2d[:,k])
+
+        Deno =  r2d*VertAvg_Sg*Ciso2*np.abs(dOmdr)
+
+        for i in range(D.n1):
+            AziAvg_Fa[i] = (Fa[i,:]*D.dx3).sum()
+            AziAvg_Fr[i] = (Fr[i,:]*D.dx3).sum()
+            AziAvg_Deno[i] = (Deno[i,:]*D.dx3).sum()
+
+        Alpha_A = AziAvg_Fa/AziAvg_Deno
+        Alpha_R = AziAvg_Fr/AziAvg_Deno
+        
+        return {'AlphaA': Alpha_A,'AlphaR': Alpha_R, 'Fa':AziAvg_Fa, 'Fr': AziAvg_Fr, 'Deno':AziAvg_Deno}
+        
+        
+
+        
+            
+            
+
+        
 
         return {'SgRphi':VertAvg_Sg, 'VrRphi':VertAvg_Vr, 'VpRphi':VertAvg_Vphi}
     
