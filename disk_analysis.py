@@ -163,7 +163,7 @@ class Stress(object):
 
         FabyR = VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
 
-        return FabyR
+        return {'SgRphi':VertAvg_Sg, 'VrRphi':VertAvg_Vr, 'VpRphi':VertAvg_Vphi}
     
                 
 
