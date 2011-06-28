@@ -144,8 +144,27 @@ class Vol_Average(object):
 
 
 
-#class Stress(object):
-#    def Reynold(self,Data):
+class Stress(object):
+    def Reynold(self,Data):
+        D = Data
+        VertAvg_Sg = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        VertAvg_Vr  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        VertAvg_Vphi  = np.zeros([D.rho.shape[0],D.rho.shape[2]])
+        dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
+        Mdisk = ((D.rho*dV).sum())
+        Vr_avg = (D.v1*D.rho*dV).sum()/Mdisk
+        Vp_avg = (D.v3*D.rho*dV).sum()/Mdisk
+
+        for k in range(Data.n3):
+            for i in range(Data.n1):
+                VertAvg_Sg[i,k] = (D.rho[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
+                VertAvg_Vr[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v1[i,:,k]-Vr_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
+                VertAvg_Vphi[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v3[i,:,k]-Vp_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
+
+        FabyR = VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
+        plot(D.x1,FabyR[:,10])
+    
+                
 
             
     
