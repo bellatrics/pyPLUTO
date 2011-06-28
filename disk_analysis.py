@@ -174,7 +174,7 @@ class Stress(object):
                 VertAvg_Vr[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v1[i,:,k]-Vr_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
                 VertAvg_Vphi[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v3[i,:,k]-Vp_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
 
-        [r2d,phi2d]=meshgrid(D.x1,D.x3)
+        [r2d,phi2d]= np.meshgrid(D.x1,D.x3)
         r2d = r2d.T
         Fa = r2d*VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
         
