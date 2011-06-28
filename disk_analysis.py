@@ -191,7 +191,7 @@ class Stress(object):
         
 
         for k in range(D.n3):
-            dOmdr[:,k] = (r2d[:,k]/Omega[:,k])*T.deriv(Omega[:,k],r2d[:,k])
+            dOmdr[:,k] = (r2d[:,k]/Omega[:,k])*T.deriv(Omega[:,k],D.x1)
 
         Deno =  r2d*VertAvg_Sg*Ciso2*np.abs(dOmdr)
 
