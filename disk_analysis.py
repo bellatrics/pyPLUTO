@@ -162,7 +162,8 @@ class Stress(object):
                 VertAvg_Vphi[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v3[i,:,k]-Vp_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
 
         FabyR = VertAvg_Sg*VertAvg_Vr*VertAvg_Vphi
-        plot(D.x1,FabyR[:,10])
+
+        return FabyR
     
                 
 
