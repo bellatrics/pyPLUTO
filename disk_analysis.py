@@ -104,6 +104,7 @@ class Rad_Average(object):
        
        return Q
 
+
             
             
             
@@ -136,14 +137,15 @@ class Vol_Average(object):
             IntEdisk[ns] = (1.0/(D.rho*dV).sum())*(IntE.sum())*(RefVel**2)
             Omdisk[ns] = (1.0/(D.rho*dV).sum())*(Omega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
             Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
-            
-           
+
         return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
 
+    
 
 
-class Stress(object):
-    def Reynold(self,Data):
+
+#class Stress(object):
+#    def Reynold(self,Data):
 
             
     
