@@ -170,7 +170,7 @@ class Stress(object):
         for k in range(Data.n3):
             for i in range(Data.n1):
                 VertAvg_Sg[i,k] = (D.rho[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
-                VertAvg_P[i,k] = (D.P[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
+                VertAvg_P[i,k] = (D.pr[i,:,k]*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
                 VertAvg_Vr[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v1[i,:,k]-Vr_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
                 VertAvg_Vphi[i,k] = (1.0/VertAvg_Sg[i,k])*(D.rho[i,:,k]*(D.v3[i,:,k]-Vp_avg)*D.x1[i]*np.sin(D.x2)*D.dx2).sum()
 
