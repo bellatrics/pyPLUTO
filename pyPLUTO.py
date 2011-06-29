@@ -181,7 +181,7 @@ class pload(object):
                 Dind.append(struct.unpack("<"+str(len(datout[j])/8)+"d",datout[j]))
 
 	    print fname_list
-	    print Dind
+	    #print Dind
 	    A = np.asarray(Dind)
 	    print A.shape
 	    for j in range(varinf.get('nvar')):
