@@ -140,7 +140,6 @@ class pload(object):
 	print "Working Dir : %s" % (w_dir)
         grid_dict = self.grid(w_dir)
         nstep = get_nstepstr(ns)
-	print nstep
         varinf= self.get_varinfo(w_dir)
         data_dict={}
         n1 = grid_dict.get('n1')
@@ -180,10 +179,9 @@ class pload(object):
                 datout.append(f_list[j].read())
                 Dind.append(struct.unpack("<"+str(len(datout[j])/8)+"d",datout[j]))
 
-	    print fname_list
-	    #print Dind
+	    
 	    A = np.asarray(Dind)
-	    print A.shape
+	    
 	    for j in range(varinf.get('nvar')):
 		    if n3 == 1:
 			    data_dict[(varinf.get('allvars')[j])]=A[j].reshape(n2,n1).transpose()
