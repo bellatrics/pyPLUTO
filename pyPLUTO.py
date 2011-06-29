@@ -140,6 +140,7 @@ class pload(object):
 	print "Working Dir : %s" % (w_dir)
         grid_dict = self.grid(w_dir)
         nstep = get_nstepstr(ns)
+	print nstep
         varinf= self.get_varinfo(w_dir)
         data_dict={}
         n1 = grid_dict.get('n1')
