@@ -181,7 +181,11 @@ class pload(object):
 
 	    A = np.asarray(Dind)
 	    for j in range(varinf.get('nvar')):
-		    data_dict[(varinf.get('allvars')[j])]=A[j].reshape(n3,n2,n1).transpose()
+		    if n3 == 1:
+			    data_dict[(varinf.get('allvars')[j])]=A[j].reshape(n2,n1).transpose()
+		    else:
+			    data_dict[(varinf.get('allvars')[j])]=A[j].reshape(n3,n2,n1).transpose()
+		    
 
 	
 	return data_dict
