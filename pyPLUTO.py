@@ -180,7 +180,10 @@ class pload(object):
                 datout.append(f_list[j].read())
                 Dind.append(struct.unpack("<"+str(len(datout[j])/8)+"d",datout[j]))
 
+	    print fname_list
+	    print D
 	    A = np.asarray(Dind)
+	    print A.shape
 	    for j in range(varinf.get('nvar')):
 		    if n3 == 1:
 			    data_dict[(varinf.get('allvars')[j])]=A[j].reshape(n2,n1).transpose()
