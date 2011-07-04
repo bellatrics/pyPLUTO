@@ -149,7 +149,7 @@ class Vol_Average(object):
             IntE = (Csound*Csound)/(kwargs.get('Gammae',1.0001)*((kwargs.get('Gammae',1.0001)-1.0)))
             Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
 
-            Timeyr[ns] = ns*2.0*np.pi*((kwargs.get('ul',1.0)*phc.au)/RefVel)/phc.year
+            Timeyr[ns] = ns*2.0*np.pi*((kwargs.get('ul',1.0)*phc.au)/RefVel)/phc.yr
             Mdisk[ns] = ((D.rho*dV).sum())*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
             Sigdisk[ns] = (1.0/(D.rho*dV).sum())*(Sigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
             Csdisk[ns] = (1.0/(D.rho*dV).sum())*(Csound.sum())*RefVel
@@ -157,7 +157,7 @@ class Vol_Average(object):
             Omdisk[ns] = (1.0/(D.rho*dV).sum())*(Omega.sum())*(RefVel/(kwargs.get('ul',1.0)*phc.au))
             Qdisk[ns] = Csdisk[ns]*Omdisk[ns]/(2.0*np.pi*phc.G*Sigdisk[ns])
 
-        return {'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
+        return {'Time':Timeyr,'Mdisk':Mdisk,'Sigma':Sigdisk,'Csound':Csdisk*1.0e-5,'Omega':Omdisk,'ToomreQ':Qdisk, 'IntE':IntEdisk}
 
     
 
