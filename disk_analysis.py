@@ -58,7 +58,11 @@ class Rad_Average(object):
     def Sigma(self,Data,**kwargs):
         Sig = np.zeros([Data.x1.shape][0])
         for i in range(Data.n1):
-            Sig[i] = (Data.rho[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+            if (Data.n3 == 1):
+                Sig[i] = (Data.rho[i,:]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+            else:
+                Sig[i] = (Data.rho[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+                
         PhySig = kwargs.get('urho',1.0e-8)*phc.au*kwargs.get('ul',1.0)
        
         return PhySig*Sig
@@ -67,7 +71,11 @@ class Rad_Average(object):
         RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
         Press = np.zeros([Data.x1.shape][0])
         for i in range(Data.n1):
-            Press[i] = (Data.pr[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+            if (Data.n3 == 1):
+                Press[i] = (Data.pr[i,:]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+            else:
+                Press[i] = (Data.pr[i,:,10]*Data.x1[i]*np.sin(Data.x2)*Data.dx2).sum()
+            
         PhyPress = kwargs.get('urho',1.0e-8)*RefVel*RefVel*phc.au*kwargs.get('ul',1.0)
         return PhyPress*Press
 
@@ -89,7 +97,11 @@ class Rad_Average(object):
        RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
        OmInt = np.zeros([Data.x1.shape][0])
        for i in range(Data.n1):
-           OmInt[i] = (Data.v3[i,Data.n2/2,10]/Data.x1[i])
+           if (Data.n3 == 1):
+               OmInt[i] = (Data.v3[i,Data.n2/2]/Data.x1[i])
+           else:
+               OmInt[i] = (Data.v3[i,Data.n2/2,10]/Data.x1[i])
+           
        PhyOm = RefVel/(phc.au*kwargs.get('ul',1.0))
        return PhyOm*OmInt
 
