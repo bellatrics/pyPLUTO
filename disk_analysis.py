@@ -138,7 +138,7 @@ class Vol_Average(object):
             dV = np.zeros(D.rho.shape)
             Sigma = np.zeros(D.rho.shape)
             if (D.n3 == 1):
-                dV = D.x1[:,np.newaxis]*D.x1[:,np.newaxis]*np.sin(D.x2[np.newaxis,:])*D.dx1[:,np.newaxis]*D.dx2[np.newaxis,:]*D.dx3
+                dV = D.x1[:,np.newaxis]*np.sin(D.x2[np.newaxis,:])*D.dx1[:,np.newaxis]*D.dx2[np.newaxis,:]
                 Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis]*np.sin(D.x2[np.newaxis,:])*D.dx2[np.newaxis,:])
             else:
                 dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
