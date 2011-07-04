@@ -149,7 +149,6 @@ class Vol_Average(object):
             Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
             
             Mdisk[ns] = ((D.rho*dV).sum())*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
-            print Mdisk[ns]
             Sigdisk[ns] = (1.0/(D.rho*dV).sum())*(Sigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
             Csdisk[ns] = (1.0/(D.rho*dV).sum())*(Csound.sum())*RefVel
             IntEdisk[ns] = (1.0/(D.rho*dV).sum())*(IntE.sum())*(RefVel**2)
