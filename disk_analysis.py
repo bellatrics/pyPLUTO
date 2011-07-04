@@ -137,8 +137,13 @@ class Vol_Average(object):
             D = pp.pload(ns,w_dir=wdir)
             dV = np.zeros(D.rho.shape)
             Sigma = np.zeros(D.rho.shape)
-            dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
-            Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx2[np.newaxis,:,np.newaxis])
+            if (D.n3 == 1):
+                dV = D.x1[:,np.newaxis]*D.x1[:,np.newaxis]*np.sin(D.x2[np.newaxis,:])*D.dx1[:,np.newaxis]*D.dx2[np.newaxis,:]*D.dx3
+                Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis]*np.sin(D.x2[np.newaxis,:])*D.dx2[np.newaxis,:])
+            else:
+                dV = D.x1[:,np.newaxis,np.newaxis]*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx1[:,np.newaxis,np.newaxis]*D.dx2[np.newaxis,:,np.newaxis]*D.dx3[np.newaxis,np.newaxis,:]
+                Sigma = (D.rho*dV)*(D.rho*D.x1[:,np.newaxis,np.newaxis]*np.sin(D.x2[np.newaxis,:,np.newaxis])*D.dx2[np.newaxis,:,np.newaxis])
+            
             Csound = (D.rho*dV)*(np.sqrt(kwargs.get('Gammae',1.0001)*(D.pr/D.rho)))
             IntE = (Csound*Csound)/(kwargs.get('Gammae',1.0001)*((kwargs.get('Gammae',1.0001)-1.0)))
             Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
