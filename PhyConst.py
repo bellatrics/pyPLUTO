@@ -19,7 +19,7 @@ pc    =  3.0856775807e18  #  /*  parsec                    */
 ly    =  0.9461e18        #  /*  light year                */
 au    =  1.49597892e13    #  /*  astronomical unit         */
 eV    =  1.602176463158e-12 #/*  electron Volt in erg      */
-
+yr    =  365.0*24.0*60.0*60.0 #/*  year in sec      */
 
 
 

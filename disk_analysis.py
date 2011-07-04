@@ -126,6 +126,7 @@ class Vol_Average(object):
         RefVel = np.sqrt(phc.G*phc.Msun/phc.au)*np.sqrt(kwargs.get('Mstar',10.0)/kwargs.get('ul',1.0))
         nstep = args[0]+1
         wdir = args[1]
+        Timeyr = np.zeros(nstep)
         Mdisk = np.zeros(nstep)
         dV = np.zeros(nstep)
         IntEdisk = np.zeros(nstep)
@@ -147,7 +148,8 @@ class Vol_Average(object):
             Csound = (D.rho*dV)*(np.sqrt(kwargs.get('Gammae',1.0001)*(D.pr/D.rho)))
             IntE = (Csound*Csound)/(kwargs.get('Gammae',1.0001)*((kwargs.get('Gammae',1.0001)-1.0)))
             Omega = (D.rho*dV)*(D.v3/D.x1[:,np.newaxis,np.newaxis])
-            
+
+            Timeyr[ns] = ns*2.0*np.pi*((kwargs.get('ul',1.0)*phc.au)/RefVel)/phc.year
             Mdisk[ns] = ((D.rho*dV).sum())*((kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au)**3)/phc.Msun)
             Sigdisk[ns] = (1.0/(D.rho*dV).sum())*(Sigma.sum())*(kwargs.get('urho',1.0e-8)*(kwargs.get('ul',1.0)*phc.au))
             Csdisk[ns] = (1.0/(D.rho*dV).sum())*(Csound.sum())*RefVel
