@@ -726,7 +726,7 @@ def polar2cartesian(r, t, grid, x, y, order=3):
 def animate_plot(w_dir=None, **kwargs):
     if w_dir == None: w_dir=os.getcwd()
 
-    
+    cdir = os.getcwd()
     files = []
     os.chdir(w_dir)
     os.system('mkdir movie')
@@ -770,6 +770,7 @@ def animate_plot(w_dir=None, **kwargs):
 
     print 'Making movie animation.mpg - this make take a while'
     os.system("mencoder 'mf://movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+    os.chdir(cdir)
 
 
 
