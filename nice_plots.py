@@ -740,7 +740,7 @@ def animate_plot(w_dir=None, **kwargs):
         yitem = Ra.Sigma(D,ul=1.0,urho=1.0e-9,Mstar=10.0,Gammae=5.0/3.0)
         ax.cla()
         ft1 = plt.figtext(0.5,0.5,r'$N_{\rm rot} = %03d$'%i)
-        ft1.set_animated('True')
+        
 
         if kwargs.get('pltype','normal') == 'normal':
             ax.plot(xitem,yitem,'k-')
@@ -762,6 +762,7 @@ def animate_plot(w_dir=None, **kwargs):
         print 'Saving frame', fname
         fig.savefig(fname)
         files.append(fname)
+        ft1.set_visible('False')
     
 
     print 'Making movie animation.mpg - this make take a while'
