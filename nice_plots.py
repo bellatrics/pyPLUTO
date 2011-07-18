@@ -723,7 +723,10 @@ def polar2cartesian(r, t, grid, x, y, order=3):
 ##############################DISK PLOTS#############################################
 
 
-def animate_plot(xitem, yitem, **kwargs):
+def animate_plot(w_dir=None, **kwargs):
+    if w_dir == None: w_dir=os.getcwd()
+
+    
     files = []
     os.system('mkdir movie')
     fig = plt.figure(num=1)
@@ -731,6 +734,10 @@ def animate_plot(xitem, yitem, **kwargs):
     frnum = kwargs.get('frames',100)
     
     for i in range(frnum):  # 50 frames
+        D = pp.pload(i,w_dir=w_dir)
+        Ra = da.Rad_Average()
+        xitem = D.x1
+        yitem = Ra.Sigma(D,ul=1.0,urho=1.0e-9,Mstar=10.0,Gammae=5.0/3.0)
         ax.cla()
 
         if kwargs.get('pltype','normal') == 'normal':
