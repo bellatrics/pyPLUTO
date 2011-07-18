@@ -753,7 +753,7 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_xlabel(kwargs.get('xlabel',r'XLabel'))
         ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
         ax.set_title(kwargs.get('title',r'Title'))
-        ax.figtext(1.0,1.0,r'$N_rot = %03d'%i)
+        plt.figtext(1.0,1.0,r'$N_rot = %03d'%i)
         fname = 'movie/_tmp%03d.png'%i
         
         print 'Saving frame', fname
