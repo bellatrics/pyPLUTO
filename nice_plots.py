@@ -739,6 +739,7 @@ def animate_plot(w_dir=None, **kwargs):
         xitem = D.x1
         yitem = Ra.Sigma(D,ul=1.0,urho=1.0e-9,Mstar=10.0,Gammae=5.0/3.0)
         ax.cla()
+        ft1.set_visible('False')
 
         if kwargs.get('pltype','normal') == 'normal':
             ax.plot(xitem,yitem,'k-')
@@ -753,7 +754,7 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_xlabel(kwargs.get('xlabel',r'XLabel'))
         ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
         ax.set_title(kwargs.get('title',r'Title'))
-        plt.figtext(0.5,0.5,r'$N_{\rm rot} = %03d$'%i)
+        ft1 = plt.figtext(0.5,0.5,r'$N_{\rm rot} = %03d$'%i)
         #ax.text(80.0,1e4,r'$N_{\rm rot} = %03d$'%i)
         fname = 'movie/_tmp%03d.png'%i
         
