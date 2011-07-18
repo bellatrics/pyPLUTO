@@ -3,6 +3,7 @@ import matplotlib.pylab as plt
 import pyPLUTO as plp
 import PhyConst as phc
 import Jet_Analysis as jana
+import disk_analysis as da
 import numpy as np
 import idlsave as idls # This is just for the mass_flux_plot. 
 import os
@@ -718,6 +719,43 @@ def polar2cartesian(r, t, grid, x, y, order=3):
 
     return map_coordinates(grid, np.array([new_ir, new_it]),
                             order=order).reshape(new_r.shape)
+
+##############################DISK PLOTS#############################################
+
+
+def animate_plot(xitem, yitem, **kwargs):
+    files = []
+    os.system('mkdir movie')
+    fig = plt.figure(num=1)
+    ax = fig.add_subplot(111)
+    frnum = kwargs.get('frames',100)
+    
+    for i in range(frnum):  # 50 frames
+        ax.cla()
+
+        if kwargs.get('pltype','normal') == 'normal':
+            ax.plot(xitem,yitem,'k-')
+        if kwargs.get('pltype','normal') == 'logx':
+            ax.semilogx(xitem,yitem,'k-')
+        if kwargs.get('pltype','normal') == 'logy':
+            ax.semilogy(xitem,yitem,'k-')
+        if kwargs.get('pltype','normal') == 'loglog':
+            ax.loglog(xitem,yitem,'k-')
+
+        ax.minorticks_on()
+        ax.set_xlabel(kwargs.get('xlabel',r'XLabel'))
+        ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
+        ax.set_title(kwargs.get('title',r'Title'))
+        fname = 'movie/_tmp%03d.png'%i
+        print 'Saving frame', fname
+        fig.savefig(fname)
+        files.append(fname)
+    
+
+    print 'Making movie animation.mpg - this make take a while'
+    os.system("mencoder 'mf://movie/_tmp*.png' -mf type=png:fps=10 \\
+    -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+
 
 
 
