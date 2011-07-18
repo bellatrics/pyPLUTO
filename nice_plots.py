@@ -728,7 +728,8 @@ def animate_plot(w_dir=None, **kwargs):
 
     
     files = []
-    os.system('mkdir' w_dir+'movie')
+    os.chdir(w_dir)
+    os.system('mkdir movie')
     D0 = plp.pload(0,w_dir=w_dir)
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
