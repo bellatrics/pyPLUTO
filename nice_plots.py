@@ -728,7 +728,7 @@ def animate_plot(w_dir=None, **kwargs):
 
     
     files = []
-    os.system('mkdir movie')
+    os.system('mkdir' w_dir+'movie')
     D0 = plp.pload(0,w_dir=w_dir)
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
@@ -759,7 +759,7 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_title(kwargs.get('title',r'Title'))
         
         ax.text(90.0,1.3e5,r'$N_{\rm rot} = %04d$'%i)
-        fname = 'movie/_tmp%03d.png'%i
+        fname = w_dir+'movie/_tmp%03d.png'%i
         
         print 'Saving frame', fname
         fig.savefig(fname)
