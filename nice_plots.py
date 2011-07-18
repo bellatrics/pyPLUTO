@@ -729,9 +729,10 @@ def animate_plot(w_dir=None, **kwargs):
     
     files = []
     os.system('mkdir movie')
+    D0 = plp.pload(0,w_dir=w_dir)
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
-    frnum = kwargs.get('frames',100)
+    frnum = kwargs.get('frames',D0.time_info()['nlast'])
     
     for i in range(frnum):  # 50 frames
         D = plp.pload(i,w_dir=w_dir)
