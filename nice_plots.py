@@ -753,8 +753,8 @@ def animate_plot(xitem, yitem, **kwargs):
     
 
     print 'Making movie animation.mpg - this make take a while'
-    os.system("mencoder 'mf://movie/_tmp*.png' -mf type=png:fps=10 \\
-    -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+    os.system("mencoder 'mf://movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+
 
 
 
