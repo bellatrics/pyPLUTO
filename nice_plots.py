@@ -731,6 +731,7 @@ def animate_plot(w_dir=None, **kwargs):
     os.system('mkdir movie')
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
+    l,b,w,h = ax.get_position() 
     frnum = kwargs.get('frames',100)
     
     for i in range(frnum):  # 50 frames
@@ -739,7 +740,7 @@ def animate_plot(w_dir=None, **kwargs):
         xitem = D.x1
         yitem = Ra.Sigma(D,ul=1.0,urho=1.0e-9,Mstar=10.0,Gammae=5.0/3.0)
         ax.cla()
-        l,b,w,h = ax.get_position() 
+        
         figtext(l+w+0.1,0.5,r'$N_{\rm rot} = %03d$'%i)
         
 
