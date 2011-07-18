@@ -729,7 +729,7 @@ def animate_plot(w_dir=None, **kwargs):
     
     files = []
     os.system('mkdir movie')
-    fig = plt.figure(num=1,figsize=[8,8])
+    fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
     frnum = kwargs.get('frames',100)
     
@@ -753,7 +753,7 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_xlabel(kwargs.get('xlabel',r'XLabel'))
         ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
         ax.set_title(kwargs.get('title',r'Title'))
-        plt.figtext(1.0,1.0,r'$N_{\rm rot} = %03d$'%i)
+        ax.text(80.0,1e4,r'$N_{\rm rot} = %03d$'%i)
         fname = 'movie/_tmp%03d.png'%i
         
         print 'Saving frame', fname
