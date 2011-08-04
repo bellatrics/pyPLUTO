@@ -731,7 +731,7 @@ def animate_plot(w_dir=None, **kwargs):
     cdir = os.getcwd()
     files = []
     os.chdir(w_dir)
-    os.system('mkdir movie')
+    os.system('mkdir j_movie')
     D0 = plp.pload(0,w_dir=w_dir)
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
@@ -762,8 +762,8 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
         ax.set_title(kwargs.get('title',r'Title'))
         
-        ax.text(90.0,1.3e5,r'$N_{\rm rot} = %04d$'%i)
-        fname = w_dir+'movie/_tmp%03d.png'%i
+        ax.text(90.0,1.3,r'$N_{\rm rot} = %04d$'%i)
+        fname = w_dir+'j_movie/_tmp%03d.png'%i
         
         print 'Saving frame', fname
         fig.savefig(fname)
@@ -772,7 +772,7 @@ def animate_plot(w_dir=None, **kwargs):
     
 
     print 'Making movie animation.mpg - this make take a while'
-    os.system("mencoder 'mf://movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+    os.system("mencoder 'mf://j_movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
     os.chdir(cdir)
 
 
