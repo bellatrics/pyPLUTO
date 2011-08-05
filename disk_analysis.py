@@ -88,7 +88,7 @@ class Rad_Average(object):
 
     def Temp(self,Data,**kwargs):
         Cs = self.Csound(Data,**kwargs)*1.0e5
-        mu = 2.353
+        mu = kwargs.get('mu',2.353)
         KELVIN = phc.kB/(mu*phc.mH)
         Temperature = Cs*Cs/KELVIN
         return Temperature
@@ -116,6 +116,16 @@ class Rad_Average(object):
        
        return Q
 
+    def cooltime(self,Data,**kwargs):
+        Cs = self.Csound(Data,**kwargs)*1.0e5
+        S = self.Sigma(Data,**kwargs)
+        Trad = self.Temp(Data,**kwargs)
+        tau = self.OpDepth(Data,**kwargs)
+        Constants = (phc.kB/(kwargs.get('mu',2.353)*phc.mH*2.0*phc.sigma))*(1.0/(kwargs.get('Gammae',5./3.) - 1.0))
+        ftau = 1.0#tau + 1.0/tau
+        tcool = (ftau*Constants*S*Cs)/Trad**3
+
+        return tcool
 
             
             
