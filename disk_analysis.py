@@ -123,7 +123,7 @@ class Rad_Average(object):
         #tau = self.OpDepth(Data,**kwargs)
         Constants = (phc.kB/(kwargs.get('mu',2.353)*phc.mH*2.0*phc.sigma))*(1.0/(kwargs.get('Gammae',5./3.) - 1.0))
         ftau = 1.0#tau + 1.0/tau
-        tcool = (ftau*Constants*S*Cs)/Trad**3
+        tcool = (ftau*Constants*S)/Trad**3
 
         return tcool
 
