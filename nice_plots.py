@@ -116,12 +116,13 @@ def symimage(*args,**kwargs):
     fig = plt.figure()
     Data = args[0]
     DataMHD = args[1]
-    var = Data.__getattribute__(args[2])
+    var = 517.32*Data.__getattribute__(args[2])
     
     if kwargs.get('ysym',False) == True:
-        ysymvar = np.flipud(Data.__getattribute__(args[2]))
+        ysymvar = 517.32*np.flipud(Data.__getattribute__(args[2]))
         x1 = Data.x1
         x2 = Data.x2
+
 
         plt.axis([-np.max(x1),np.max(x1),np.min(x2),np.max(x2)])
         plt.pcolormesh(-x1[::-1],x2,ysymvar.T,vmin=kwargs.get('vmin',np.min(var)),vmax=kwargs.get('vmax',np.max(var)))

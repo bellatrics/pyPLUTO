@@ -1,5 +1,6 @@
 import pyPLUTO as pp
 import PhyConst as phc
+import read_opacities as rop
 import os
 import numpy as np
 import asciidata as asc
@@ -33,6 +34,20 @@ def disk_reso(Data,ul=None):
     print 'Delta phi = %f in the units of scale length ul'%(DelPhi)
     print 'THUS the ratio is :%f:%f:%f'%(Rat1,Rat2,Rat3)
     print '--------------------------------------------'
+
+
+def OpMatrix(Data, Type=None,**kwargs):
+    if Type==None: Type=0
+    RefVel2 = (phc.G*phc.Msun*kwargs.get('Mstar',10.0))/(phc.au*kwargs.get('ul',1.0))
+    RefT = kwargs.get('mu',2.353)*(phc.mH/phc.kB)*RefVel2
+    Tmatrix = RefT*(Data.pr/Data.rho)
+    MatrixOp = np.zeros(Tmatrix.shape)
+    for i in range(Data.n1):
+        for j in rnage(Data.n2):
+            for k in range(Data.n3):
+                MatrixOp[i,j,k] = rop.SemenovOpacity(Temp=Tmatrix[i,j,k],Density=Data.rho[i,j,k],Type=Type)
+
+    return MatrixOp
 
 
 
