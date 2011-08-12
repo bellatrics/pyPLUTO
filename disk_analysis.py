@@ -43,7 +43,7 @@ def OpMatrix(Data, Type=None,**kwargs):
     Tmatrix = RefT*(Data.pr/Data.rho)
     MatrixOp = np.zeros(Tmatrix.shape)
     for i in range(Data.n1):
-        for j in rnage(Data.n2):
+        for j in range(Data.n2):
             for k in range(Data.n3):
                 MatrixOp[i,j,k] = rop.SemenovOpacity(Temp=Tmatrix[i,j,k],Density=Data.rho[i,j,k],Type=Type)
 
