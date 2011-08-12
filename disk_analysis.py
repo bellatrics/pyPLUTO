@@ -46,6 +46,8 @@ def OpMatrix(Data, Type=None,**kwargs):
         for j in range(Data.n2):
             for k in range(Data.n3):
                 MatrixOp[i,j,k] = rop.SemenovMeanOpacity(Temp=Tmatrix[i,j,k],Density=Data.rho[i,j,k],Type=Type)
+        print i
+    
 
     return MatrixOp
 
