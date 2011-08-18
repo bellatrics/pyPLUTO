@@ -199,7 +199,7 @@ class App:
             else:
                 if self.polarvar.get() == 1:
                     self.var = self.I.get_polar_plot(self.var[:,:,int(self.ex3.get())],rtheta=True)
-                    self.a.axis([0.0,D.n1,0.0,2*D.n1])
+                    self.a.axis([0.0,self.D.n1,0.0,2*self.D.n1])
                 else:
                     self.var = self.var[:,:,int(self.ex3.get())].T
         
@@ -214,7 +214,7 @@ class App:
             self.y = self.D.x3
             if self.polarvar.get() == 1:
                 self.var = self.I.get_polar_plot(self.var[:,int(self.ex2.get()),:],rphi=True)
-                self.a.axis([0.0,2*D.n1,0.0,2*D.n1])
+                self.a.axis([0.0,2*self.D.n1,0.0,2*self.D.n1])
             else:
                 self.var = self.var[:,int(self.ex2.get()),:].T
 
