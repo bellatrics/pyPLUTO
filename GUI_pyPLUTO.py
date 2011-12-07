@@ -13,6 +13,8 @@ import sys
 import os
 
 
+
+
 class App:
     def __init__(self,master):
         frame = Frame(master)
@@ -32,9 +34,10 @@ class App:
         self.enstep.grid(row=0,column=1)
         self.enstep.insert(0, "0")
 
-        
-        self.varkeys = self.loaddata().get_varinfo(w_dir=self.wdir)['allvars']
-        self.grid_dict= self.loaddata().grid(w_dir=self.wdir)
+        self.myData = self.loaddata()
+        self.tinfo = pp.time_info(self.wdir)
+        self.varkeys = self.myData.get_varinfo(w_dir=self.wdir)['allvars']
+        self.grid_dict= self.myData.grid(w_dir=self.wdir)
         
 
         self.ldatabutton=Button(frame,text="Load data",command=self.loaddata)
@@ -72,14 +75,14 @@ class App:
         
         for j in range(len(self.varkeys)):
             self.ldata = Radiobutton(frame,text=self.varkeys[j],variable=self.v,value=self.varkeys[j],command=self.getmyvar)
-            self.ldata.grid(row=3+j,column=0)
+            self.ldata.grid(row=3+j,column=0,sticky=W)
             
         self.slvar = StringVar()
         self.slvar.set("Choose Slice")
         SliceList = ("Along x1","Along x2","Along x3","Along x1-x2","Along x2-x3","Along x3-x1")
         for j in range(len(SliceList)):
             self.sldata = Radiobutton(frame,text=SliceList[j],variable=self.slvar,value=SliceList[j],command=self.setslice)
-            self.sldata.grid(row=3+j,column=1)
+            self.sldata.grid(row=3+j,column=1,sticky=W)
 
         #OptionMenu(frame, self.slvar, *SliceList, command=self.setslice).grid(row=1,column=1)
 
@@ -120,7 +123,7 @@ class App:
         self.lbinf2a = Label(frame,text="Domain :",font=("Times",10,"bold")).grid(row=29,column=0,sticky=W,columnspan=3)
         self.lbinf2 = Label(frame,text="n1 x n2 x n3 =  %d x %d x %d " % (self.grid_dict.get('n1'),self.grid_dict.get('n2'),self.grid_dict.get('n3'))).grid(row=30,column=0,sticky=W,columnspan=3)
         self.lbinf3a = Label(frame,text="Time Status",font=("Times",10,"bold")).grid(row=31,column=0,sticky=W,columnspan=3)
-        self.lbinf3 = Label(frame,text="Nlast = %d, Time = %f" % (pp.time_info(self.wdir).get('nlast'), pp.time_info(self.wdir).get('time'))).grid(row=32,column=0,sticky=W,columnspan=3)
+        self.lbinf3 = Label(frame,text="Nlast = %d, Time = %f" % (self.tinfo.get('nlast'), self.tinfo.get('time'))).grid(row=32,column=0,sticky=W,columnspan=3)
                         
 
         
@@ -230,7 +233,7 @@ class App:
             self.image=self.a.pcolormesh(self.var,vmin=min(self.var),vmax=max(self.var))
         else:
             self.a.axis([min(self.x),max(self.x),min(self.y),max(self.y)])
-            self.image=self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var))
+            self.image=self.a.pcolormesh(self.x,self.y,self.var,vmin=min(self.var),vmax=max(self.var),cmap='copper')
         
         self.a.set_xlabel(self.xlb.get())
         self.a.set_ylabel(self.ylb.get())
