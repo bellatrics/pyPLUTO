@@ -7,6 +7,7 @@ import disk_analysis as da
 import numpy as np
 import idlsave as idls # This is just for the mass_flux_plot. 
 import os
+from matplotlib.widgets import Slider
 
 from scipy.interpolate import interp1d
 from scipy.ndimage import map_coordinates
@@ -736,13 +737,16 @@ def animate_plot(w_dir=None, **kwargs):
     D0 = plp.pload(0,w_dir=w_dir)
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
-    frnum = kwargs.get('frames',D0.time_info()['nlast'])
+    plt.subplots_adjust(left=0.1, bottom=0.15)
+    frnum = 638#kwargs.get('frames',D0.time_info()['nlast'])
     
-    for i in range(frnum):  # 50 frames
+    
+    
+    for i in [0,10,25,50,150,250,319,325,340,450,638]:  # 50 frames
         D = plp.pload(i,w_dir=w_dir)
         Ra = da.Rad_Average()
         xitem = D.x1
-	yitem = D.x1*D.v3[:,32,10]*D.rho[:,32,10]
+	yitem = D.x1*D.v3[:,32]
     #    yitem = Ra.Sigma(D,ul=1.0,urho=1.0e-9,Mstar=10.0,Gammae=5.0/3.0)
         ax.cla()
         
@@ -763,7 +767,14 @@ def animate_plot(w_dir=None, **kwargs):
         ax.set_ylabel(kwargs.get('ylabel',r'YLabel'))
         ax.set_title(kwargs.get('title',r'Title'))
         
-        ax.text(90.0,1.3,r'$N_{\rm rot} = %04d$'%i)
+        
+        #ax.text(90.0,1.3,r'$N_{\rm rot} = %04d$'%i)
+        axcolor = 'white'
+        axtime = plt.axes([0.1, 0.01, 0.8, 0.02], axisbg=axcolor)
+        axtime.cla()
+        stime = Slider(axtime, 'Nsteps', 0, frnum, valinit=i)
+
+        #plt.draw()
         fname = w_dir+'j_movie/_tmp%03d.png'%i
         
         print 'Saving frame', fname
@@ -773,7 +784,7 @@ def animate_plot(w_dir=None, **kwargs):
     
 
     print 'Making movie animation.mpg - this make take a while'
-    os.system("mencoder 'mf://j_movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o movie/animation.mpg")
+    os.system("mencoder 'mf://j_movie/_tmp*.png' -mf type=png:fps=10 -ovc lavc -lavcopts vcodec=wmv2 -oac copy -o j_movie/animation.mpg")
     os.chdir(cdir)
 
 
