@@ -738,7 +738,7 @@ def animate_plot(w_dir=None, **kwargs):
     fig = plt.figure(num=1,figsize=[7,7])
     ax = fig.add_subplot(111)
     plt.subplots_adjust(left=0.1, bottom=0.15)
-    frnum = 638#kwargs.get('frames',D0.time_info()['nlast'])
+    frnum = kwargs.get('frames',plp.time_info(w_dir=w_dir)['time'])
     
     
     
@@ -772,7 +772,7 @@ def animate_plot(w_dir=None, **kwargs):
         axcolor = 'white'
         axtime = plt.axes([0.1, 0.01, 0.8, 0.02], axisbg=axcolor)
         axtime.cla()
-        stime = Slider(axtime, 'Nsteps', 0, frnum, valinit=i)
+        stime = Slider(axtime, 'Nsteps', 0, frnum , valinit=D.time)
 
         #plt.draw()
         fname = w_dir+'j_movie/_tmp%03d.png'%i

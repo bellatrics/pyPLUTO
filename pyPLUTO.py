@@ -79,8 +79,6 @@ class pload(object):
         f_var.close()
         return {'fltype':fltype, 'nvar':nvar, 'allvars':allvars}
 
-	    
-	    
     def geometry(self,w_dir=None):
         if w_dir is None : w_dir = curdir()
 	fname_d = w_dir+"definitions.h"
@@ -89,7 +87,25 @@ class pload(object):
         Geo_info = linecache.getline(fname_d,4).split()
         f_def.close()
         print "GEOMETRY >> " + Geo_info[2]
-        
+
+    def tinfo(self,ns,w_dir=None):
+	if w_dir is None : w_dir = curdir()
+	fname_v = w_dir+"dbl.out"
+        f_var = open(fname_v)
+	tlist = []
+	for line in f_var.readlines():
+		tlist.append(line.split())
+
+	last_line = tlist[-1][0]
+	nlast = int(last_line)
+	SimTime =  float(tlist[ns][1])
+	Dt = float(tlist[ns][2])
+	Nstep = int(tlist[ns][3])
+
+	return {'nlast':nlast,'time':SimTime,'dt':Dt,'Nstep':Nstep}
+
+	
+	    
 
     def grid(self,w_dir=None):
         if w_dir is None: w_dir=curdir()
@@ -197,10 +213,13 @@ class pload(object):
 	    if w_dir is None : w_dir=curdir()
 	    Grid_dictionary=self.grid(w_dir)
 	    Data_dictionary=self.data(ns,w_dir)
+	    Time_dictionary = self.tinfo(ns,w_dir)
 	    for keys in Grid_dictionary:
 		    object.__setattr__(self,keys,Grid_dictionary.get(keys))
 	    for keys in Data_dictionary:
 		    object.__setattr__(self,keys,Data_dictionary.get(keys))
+	    for keys in Time_dictionary:
+		    object.__setattr__(self,keys,Time_dictionary.get(keys))
 
 
 
